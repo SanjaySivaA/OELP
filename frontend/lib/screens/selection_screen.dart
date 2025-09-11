@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_navbar.dart'; 
 
 class SelectionScreen extends StatelessWidget {
   const SelectionScreen({super.key});
@@ -6,115 +7,263 @@ class SelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(60),
-        child: AppBar(
-          backgroundColor: Colors.blue,
-          elevation: 0,
-          title: Row(
-            children: [
-              // Logo (replace with your asset or network image)
-              //Image.asset("assets/logo.png", height: 30),
-              const SizedBox(width: 8),
-              const Text("Logo", style: TextStyle(color: Colors.white)),
-              const Spacer(),
-              TextButton(
-                onPressed: () {},
-                child: const Text("Practice", style: TextStyle(color: Colors.white)),
+      appBar: const CustomNavBar(), 
+      endDrawer: Drawer( 
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.blue),
+              child: Text(
+                "Menu",
+                style: TextStyle(color: Colors.white, fontSize: 18),
               ),
-              const SizedBox(width: 16),
-              TextButton(
-                onPressed: () {},
-                child: const Text("Home", style: TextStyle(color: Colors.white)),
-              ),
-              const SizedBox(width: 16),
-              IconButton(
-                onPressed: () {},
-                icon: Image.asset("../assets/icons/bell.png", height: 22), // bell icon
-              ),
-              const SizedBox(width: 8),
-              CircleAvatar(
-                backgroundImage: AssetImage("assets/icons/user.png"), // user avatar
-              ),
-            ],
-          ),
+            ),
+            ListTile(
+              title: const Text("Dashboard"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: const Text("Tests"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: const Text("Practice"),
+              onTap: () {},
+            ),
+            ListTile(
+              title: const Text("Reports"),
+              onTap: () {},
+            ),
+          ],
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 32),
-            const Text(
-              "Welcome back, User!",
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+            // -------- HERO SECTION -------- //
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 60, horizontal: 20),
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue, Colors.lightBlueAccent],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: Column(
+                children: const [
+                  Text(
+                    "Choose Your Test Type",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    "Select from India's most competitive entrance examinations and start your journey towards academic excellence.",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 16, color: Colors.white70),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 16),
-            const Text(
-              "What do you want to practice today?",
-              style: TextStyle(fontSize: 18),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
 
-            // Responsive grid
+            const SizedBox(height: 40),
+
+            // -------- AVAILABLE TEST TYPES -------- //
+            const Text(
+              "Available Test Types",
+              style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                "Choose the examination that aligns with your career goals and academic aspirations.",
+                style: TextStyle(color: Colors.grey),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 30),
+
             LayoutBuilder(
               builder: (context, constraints) {
-                int crossAxisCount = 1;
-                if (constraints.maxWidth > 1200) {
-                  crossAxisCount = 3;
-                } else if (constraints.maxWidth > 800) {
-                  crossAxisCount = 2;
+                if (constraints.maxWidth > 1000) {
+                  // 3 cards in a row for wide screens
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Flexible(
+                        child: TestCard(
+                          icon: Icons.school,
+                          title: "JEE Main",
+                          description:
+                              "Joint Entrance Examination - Main for admission to NITs, IIITs, and other centrally funded technical institutions.",
+                          subjects: ["Physics", "Chemistry", "Mathematics"],
+                          buttonText: "Select JEE Main",
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Flexible(
+                        child: TestCard(
+                          icon: Icons.menu_book,
+                          title: "JEE Advanced",
+                          description:
+                              "Advanced level examination for admission to Indian Institutes of Technology (IITs) and other prestigious engineering colleges.",
+                          subjects: ["Physics", "Chemistry", "Mathematics"],
+                          buttonText: "Select JEE Advanced",
+                        ),
+                      ),
+                      SizedBox(width: 20),
+                      Flexible(
+                        child: TestCard(
+                          icon: Icons.medical_services,
+                          title: "NEET",
+                          description:
+                              "National Eligibility cum Entrance Test for admission to medical and dental colleges across India.",
+                          subjects: ["Physics", "Chemistry", "Biology"],
+                          buttonText: "Select NEET",
+                        ),
+                      ),
+                    ],
+                  );
+                } else {
+                  // stack vertically for mobile
+                  return Column(
+                    children: const [
+                      TestCard(
+                        icon: Icons.school,
+                        title: "JEE Main",
+                        description:
+                            "Joint Entrance Examination - Main for admission to NITs, IIITs, and other centrally funded technical institutions.",
+                        subjects: ["Physics", "Chemistry", "Mathematics"],
+                        buttonText: "Select JEE Main",
+                      ),
+                      SizedBox(height: 20),
+                      TestCard(
+                        icon: Icons.menu_book,
+                        title: "JEE Advanced",
+                        description:
+                            "Advanced level examination for admission to Indian Institutes of Technology (IITs) and other prestigious engineering colleges.",
+                        subjects: ["Physics", "Chemistry", "Mathematics"],
+                        buttonText: "Select JEE Advanced",
+                      ),
+                      SizedBox(height: 20),
+                      TestCard(
+                        icon: Icons.medical_services,
+                        title: "NEET",
+                        description:
+                            "National Eligibility cum Entrance Test for admission to medical and dental colleges across India.",
+                        subjects: ["Physics", "Chemistry", "Biology"],
+                        buttonText: "Select NEET",
+                      ),
+                    ],
+                  );
                 }
-
-                return GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: crossAxisCount,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 1.2,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: [
-                    _buildCard("JEE(Main)", "assets/images/jee_advanced.png"),
-                    _buildCard("JEE(Advanced)", "assets/images/jee_main.png"),
-                    _buildCard("NEET", "assets/images/neet.png"),
-                  ],
-                );
               },
             ),
+
+            const SizedBox(height: 40),
           ],
         ),
       ),
     );
   }
+}
 
-  Widget _buildCard(String title, String imagePath) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: InkWell(
-        onTap: () {
-          // Navigate to respective test screen
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Image.asset(imagePath, fit: BoxFit.contain),
+// -------- TEST CARD WIDGET -------- //
+class TestCard extends StatefulWidget {
+  final IconData icon;
+  final String title;
+  final String description;
+  final List<String> subjects;
+  final String buttonText;
+
+  const TestCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.description,
+    required this.subjects,
+    required this.buttonText,
+  });
+
+  @override
+  State<TestCard> createState() => _TestCardState();
+}
+
+class _TestCardState extends State<TestCard> {
+  bool _isHovered = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (_) => setState(() => _isHovered = true),
+      onExit: (_) => setState(() => _isHovered = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        transform: _isHovered
+            ? (Matrix4.identity()..scale(1.03))
+            : Matrix4.identity(),
+        child: Card(
+          elevation: _isHovered ? 8 : 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+            side: BorderSide(color: Colors.grey.shade300),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(widget.icon, size: 40, color: Colors.blue),
+                const SizedBox(height: 16),
+                Text(widget.title,
+                    style: const TextStyle(
+                        fontSize: 20, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 10),
+                Text(widget.description,
+                    style: const TextStyle(color: Colors.grey)),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: widget.subjects
+                      .map((s) => Chip(
+                            label: Text(s),
+                            backgroundColor: Colors.grey.shade200,
+                          ))
+                      .toList(),
+                ),
+                const SizedBox(height: 16),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                  onPressed: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("${widget.title} selected")),
+                    );
+                  },
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(widget.buttonText),
+                      const Icon(Icons.arrow_forward, size: 18),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              color: Colors.grey[200],
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
 import 'screens/register_screen.dart';
 import 'screens/selection_screen.dart';
+import 'screens/analytics_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,6 +24,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginScreen(),
         '/register': (context) => const RegisterScreen(),
         '/selection': (context) => const SelectionScreen(),
+        '/analytics': (context) => AnalyticsScreen(),
       },
     );
   }
