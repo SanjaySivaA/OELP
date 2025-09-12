@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/test_models.dart';
 
 class ApiService {
-  final String _baseUrl = "https://your-backend-api-url.com/api"; // <-- IMPORTANT: Replace with your actual backend URL
+  final String _baseUrl = "https://backend-api-url.com/api"; // placeholder
 
   Future<Test> getTest(String testId) async {
     try {
