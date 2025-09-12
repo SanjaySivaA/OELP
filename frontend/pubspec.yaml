@@ -78,7 +78,6 @@ flutter:
     - assets/images/jee_advanced.png
     - assets/images/jee_main.png
     - assets/images/neet.png
-    - assets/icons/
 
   # To add assets to your application, add an assets section, like this:
   # assets:

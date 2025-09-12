@@ -59,10 +59,10 @@ class TestNotifier extends StateNotifier<TestState> {
 
   TestNotifier(this._apiService) : super(TestState());
 
-  Future<void> loadTest(String testId) async {
+  Future<void> loadTest() async {
     try {
       state = state.copyWith(isLoading: true, error: null);
-      final testData = await _apiService.getTest(testId);
+      final testData = await _apiService.getTest();
 
       // Initialize statuses for all questions
       final initialStatuses = <String, QuestionStatus>{};

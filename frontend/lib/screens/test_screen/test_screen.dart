@@ -20,7 +20,7 @@ class _TestScreenState extends ConsumerState<TestScreen> {
     //waits until the first frame is built before making the API call.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // ref.read here because we want to call the function only once
-      ref.read(testProvider.notifier).loadTest('jee_main_mock_01'); //placeholder test ID
+      ref.read(testProvider.notifier).loadTest(); //placeholder test ID
     });
   }
 

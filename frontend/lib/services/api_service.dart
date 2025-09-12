@@ -3,11 +3,11 @@ import 'package:http/http.dart' as http;
 import '../models/test_models.dart';
 
 class ApiService {
-  final String _baseUrl = "https://backend-api-url.com/api"; // placeholder
+  final String _baseUrl = "http://localhost:8000"; // placeholder
 
-  Future<Test> getTest(String testId) async {
+  Future<Test> getTest() async {
     try {
-      final response = await http.get(Uri.parse('$_baseUrl/tests/$testId/start'));
+      final response = await http.get(Uri.parse('$_baseUrl/getTest'));
 
       if (response.statusCode == 200) {
         return Test.fromJson(jsonDecode(response.body));
