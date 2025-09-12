@@ -37,6 +37,21 @@ dependencies:
 
   fl_chart: ^0.63.0
 
+  # State Management 
+  flutter_riverpod: ^2.5.1
+
+  # API Calls
+  http: ^1.2.1 
+
+  # Caching network images from  API
+  cached_network_image: ^3.3.1
+
+  # For local storage (saving test state if offline)
+  shared_preferences: ^2.2.3
+
+  # For checking network status
+  connectivity_plus: ^6.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
