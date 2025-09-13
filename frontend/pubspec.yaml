@@ -52,6 +52,8 @@ dependencies:
   # For checking network status
   connectivity_plus: ^6.0.3
 
+  flutter_markdown: ^0.7.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

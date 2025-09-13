@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Revi Page',
+      title: 'Auth Page',
       theme: ThemeData(primarySwatch: Colors.blue),
 
       initialRoute: '/test',

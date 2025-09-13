@@ -1,10 +1,14 @@
+// lib/screens/test_screen/test_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../providers/test_provider.dart';
-import 'widgets/test_header.dart';
 
-// Using a ConsumerStatefulWidget to have access to both `ref` (from Riverpod)
-// and `initState` (a standard widget lifecycle method).
+import 'widgets/test_header.dart';
+import 'widgets/right_navigation_panel.dart';
+import 'widgets/bottom_action_buttons.dart';
+import 'widgets/question_display.dart';
+
 class TestScreen extends ConsumerStatefulWidget {
   const TestScreen({super.key});
 
@@ -13,64 +17,121 @@ class TestScreen extends ConsumerStatefulWidget {
 }
 
 class _TestScreenState extends ConsumerState<TestScreen> {
+  bool _isPanelVisible = true;
+  final double panelWidth = 275;
+
+  final PageController _pageController = PageController();
 
   @override
   void initState() {
     super.initState();
-    //waits until the first frame is built before making the API call.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // ref.read here because we want to call the function only once
-      ref.read(testProvider.notifier).loadTest(); //placeholder test ID
+      ref.read(testProvider.notifier).loadTest();
     });
   }
 
   @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Widget will automatically rebuild whenever the TestState changes.
+
+    ref.listen(testProvider.select((s) => s.currentQuestionIndex), (previous, next) {
+    // This listens for changes to ONLY the currentQuestionIndex.
+    // If it changes, we command the PageController to animate to the new page.
+      if (_pageController.page?.round() != next) {
+        _pageController.animateToPage(
+          next,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+
     final testState = ref.watch(testProvider);
 
-    // Error
     if (testState.error != null) {
-      return Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text('An error occurred: ${testState.error}'),
-          ),
-        ),
-      );
+      return Scaffold(body: Center(child: Text('An error occurred: ${testState.error}')));
     }
 
-    // Loading
     if (testState.isLoading || testState.test == null) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    // Loading successful
+    final allQuestions = testState.test!.sections.expand((s) => s.questions).toList();
+
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
       appBar: const TestHeader(),
-      body: const Row(
+      body: Stack(
         children: [
-          Expanded(
-            flex: 3, // Give more space to the question area
-            child: Center(child: Text('Question Area Placeholder')),
+          // Main content area
+          // It's padded on the right to make space for the panel
+          AnimatedPadding(
+            duration: const Duration(milliseconds: 300),
+            padding: EdgeInsets.only(right: _isPanelVisible ? panelWidth : 0),
+            child: PageView.builder(
+              controller: _pageController,
+              itemCount: allQuestions.length,
+              onPageChanged: (index) {
+                ref.read(testProvider.notifier).goToQuestion(index);
+              },
+              itemBuilder: (context, index) {
+              final question = allQuestions[index];
+              return QuestionDisplay(
+                question: question,
+                questionIndex: index, // <-- Pass the index here
+              );
+              },
+            ),
           ),
-          Expanded(
-            flex: 1, // Give less space to the nav panel
-            child: Center(child: Text('Navigation Panel Placeholder')),
+
+          // The slide-out panel, wrapped in AnimatedPositioned
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            right: _isPanelVisible ? 0 : -panelWidth, // Slides off-screen
+            top: 0,
+            bottom: 0,
+            child: const RightNavigationPanel(),
+          ),
+
+          // The collapse button, also animated
+          AnimatedPositioned(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+            right: _isPanelVisible ? panelWidth - 12 : -12, // Sits on the edge
+            top: MediaQuery.of(context).size.height / 2 - 50,
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isPanelVisible = !_isPanelVisible;
+                });
+              },
+              child: Container(
+                width: 24,
+                height: 100,
+                decoration: const BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12),
+                    bottomLeft: Radius.circular(12),
+                  ),
+                ),
+                child: Icon(
+                  _isPanelVisible ? Icons.arrow_forward_ios_rounded : Icons.arrow_back_ios_rounded,
+                  color: Colors.white,
+                  size: 14,
+                ),
+              ),
+            ),
           ),
         ],
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        padding: const EdgeInsets.all(8.0),
-        color: Colors.black12,
-        child: const Center(child: Text('Action Buttons Placeholder')),
-      ),
+      bottomNavigationBar: const BottomActionButtons(),
     );
   }
 }
